@@ -1,8 +1,6 @@
 import React, { createContext, useState } from "react";
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:4000";
-
 export const UserContext = createContext();
 
 export default function UserContextProvider(props) {
