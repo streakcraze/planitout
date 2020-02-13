@@ -7,6 +7,10 @@ import Loading from "../components/Loading";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(theme => ({
@@ -45,6 +49,7 @@ export default function Login() {
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const [errors, setErrors] = useState({});
 
 	const handleChange = e => {
@@ -62,6 +67,14 @@ export default function Login() {
 			default:
 				return null;
 		}
+	};
+
+	const handleClickShowPassword = () => {
+		setShowPassword(!showPassword);
+	};
+
+	const handleMouseDownPassword = event => {
+		event.preventDefault();
 	};
 
 	const handleSubmit = e => {
@@ -134,7 +147,7 @@ export default function Login() {
 				<TextField
 					label="Password"
 					name="password"
-					type="password"
+					type={showPassword ? "text" : "password"}
 					value={password}
 					error={errors.password ? true : false}
 					helperText={errors.password}
@@ -142,6 +155,18 @@ export default function Login() {
 					onChange={handleChange}
 					autoComplete="current-password"
 					className={classes.inputField}
+					InputProps={{
+						endAdornment: (
+							<InputAdornment position="end">
+								<IconButton
+									onClick={handleClickShowPassword}
+									onMouseDown={handleMouseDownPassword}
+								>
+									{showPassword ? <Visibility /> : <VisibilityOff />}
+								</IconButton>
+							</InputAdornment>
+						)
+					}}
 				/>
 				<span>
 					already a user? <a href="/login">login</a>
