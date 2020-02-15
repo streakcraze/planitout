@@ -86,7 +86,7 @@ export default function BudgetContextProvider(props) {
 		}
 
 		axios
-			.delete("/api/items", { config, data: ids })
+			.delete("/api/items", { ...config, data: ids })
 			.then(res => {
 				setItemsLoading(false);
 				console.log(res.data);
