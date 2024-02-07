@@ -1,18 +1,18 @@
 import React, { useContext, useState, useEffect } from "react";
 import { BudgetContext } from "../context/BudgetContext";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ReactLoading from "react-loading";
 
 //MUI
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import AddIcon from "@material-ui/icons/Add";
-import Modal from "@material-ui/core/Modal";
-import Backdrop from "@material-ui/core/Backdrop";
-import Fade from "@material-ui/core/Fade";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import { makeStyles } from "@mui/styles";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
+import Modal from "@mui/material/Modal";
+import Backdrop from "@mui/material/Backdrop";
+import Fade from "@mui/material/Fade";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -78,7 +78,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Home() {
 	const classes = useStyles();
-	const history = useHistory();
+	const navigate = useNavigate();
 	const { categories, addCategory, itemsLoading, getItems } = useContext(
 		BudgetContext
 	);
@@ -139,7 +139,7 @@ export default function Home() {
 							<button
 								key={i}
 								className={classes.category}
-								onClick={() => history.push(`/items/${category}`)}
+								onClick={() => navigate(`/items/${category}`)}
 							>
 								{category}
 							</button>

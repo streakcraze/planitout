@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { UserContext } from "./context/UserContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Dashboard from "./components/Dashboard";
@@ -11,9 +11,9 @@ import Login from "./pages/login";
 import Signup from "./pages/signup";
 
 //MUI
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@mui/styles";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
 
 const useStyles = makeStyles(theme => ({
 	container: {
@@ -68,17 +68,13 @@ function App() {
 						</span>
 					)}
 					<Paper elevation={3}>
-						<Switch>
-							<ProtectedRoute exact path="/" component={Home} />
-							<Route exact path="/login" component={Login} />
-							<Route exact path="/signup" component={Signup} />
-							<ProtectedRoute
-								exact
-								path="/items/:category"
-								component={Dashboard}
-							/>
-							<Route path="*" component={() => "404 NOT FOUND"} />
-						</Switch>
+						<Routes>
+							<Route exact path="/" element={<ProtectedRoute component={Home} />} />
+							<Route exact path="/login" element={<Login />} />
+							<Route exact path="/signup" element={<Signup />} />
+							<Route exact path="/items/:category" element={<ProtectedRoute component={Dashboard} />} />
+							<Route path="*" element={() => "404 NOT FOUND"} />
+						</Routes>
 					</Paper>
 				</div>
 			) : (

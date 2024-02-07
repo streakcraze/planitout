@@ -1,17 +1,17 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 
 //MUI
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import IconButton from "@material-ui/core/IconButton";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import Button from "@material-ui/core/Button";
+import { makeStyles } from "@mui/styles";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Button from "@mui/material/Button";
 
 const useStyles = makeStyles(theme => ({
 	container: {
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 export default function Login() {
 	const classes = useStyles();
 	const { register, userLoading } = useContext(UserContext);
-	const history = useHistory();
+	const navigate = useNavigate();
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -106,7 +106,7 @@ export default function Login() {
 		else {
 			const newUser = { username, email, password };
 			register(newUser)
-				.then(() => history.push("/"))
+				.then(() => navigate("/"))
 				.catch(err => setErrors(err));
 		}
 	};

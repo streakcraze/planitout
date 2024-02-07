@@ -2,8 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { BudgetContext } from "../context/BudgetContext";
 
 //MUI
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@mui/styles";
+import Typography from "@mui/material/Typography";
 
 const useStyles = makeStyles({
 	priceTotal: {

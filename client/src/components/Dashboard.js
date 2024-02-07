@@ -1,22 +1,22 @@
 import React, { useState, useContext, useEffect } from "react";
 import ReactLoading from "react-loading";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BudgetContext } from "../context/BudgetContext";
 import BudgetForm from "./BudgetForm";
 import BudgetTable from "./BudgetTable";
 import BudgetTotal from "./BudgetTotal";
 
 //MUI
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
-import Modal from "@material-ui/core/Modal";
-import Backdrop from "@material-ui/core/Backdrop";
-import Fade from "@material-ui/core/Fade";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import { makeStyles } from "@mui/styles";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Modal from "@mui/material/Modal";
+import Backdrop from "@mui/material/Backdrop";
+import Fade from "@mui/material/Fade";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 const useStyles = makeStyles(theme => ({
 	header: {
@@ -74,7 +74,7 @@ export default function Dashboard({ match }) {
 		params: { category }
 	} = match;
 	const classes = useStyles();
-	const history = useHistory();
+	const navigate = useNavigate();
 	let {
 		items,
 		categories,
@@ -111,7 +111,7 @@ export default function Dashboard({ match }) {
 			setError("category already exists");
 		else {
 			updateCategory(category, update);
-			history.push(`/items/${update}`);
+			navigate(`/items/${update}`);
 			setError(null);
 			setOpen(false);
 			setUpdate("");
@@ -121,7 +121,7 @@ export default function Dashboard({ match }) {
 	const handleDelete = () => {
 		if (window.confirm("Delete Category?")) {
 			deleteItems(items.map(item => item._id));
-			history.push("/");
+			navigate("/");
 		}
 	};
 
