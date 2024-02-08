@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 
 //MUI
-import { makeStyles } from "@mui/styles";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -13,37 +12,33 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Button from "@mui/material/Button";
 
-const useStyles = makeStyles(theme => ({
+const sxStyles = {
 	container: {
 		padding: 30,
 		display: "flex",
 		flexDirection: "column",
 		justifyContent: "center",
-		alignItems: "center"
+		alignItems: "center",
 	},
 	inputField: {
 		display: "block",
-		marginBottom: 30,
+		marginBottom: 5,
 		width: 300,
-		[theme.breakpoints.down("xs")]: {
-			width: 250
-		}
 	},
 	submitButton: {
 		display: "block",
 		margin: "20px auto 0",
-		width: 100
+		width: 100,
 	},
 	errors: {
 		backgroundColor: "#f4f4f4",
 		padding: 10,
 		lineHeight: "0",
-		textAlign: "center"
-	}
-}));
+		textAlign: "center",
+	},
+};
 
 export default function Login() {
-	const classes = useStyles();
 	const navigate = useNavigate();
 	const { login, userLoading } = useContext(UserContext);
 	const [username, setUsername] = useState("");
@@ -51,7 +46,7 @@ export default function Login() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [errors, setErrors] = useState({});
 
-	const handleChange = e => {
+	const handleChange = (e) => {
 		const { name, value } = e.target;
 		switch (name) {
 			case "username":
@@ -69,11 +64,11 @@ export default function Login() {
 		setShowPassword(!showPassword);
 	};
 
-	const handleMouseDownPassword = event => {
+	const handleMouseDownPassword = (event) => {
 		event.preventDefault();
 	};
 
-	const handleSubmit = e => {
+	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (username.trim() === "")
 			setErrors({ ...errors, username: "field must not be empty" });
@@ -82,23 +77,23 @@ export default function Login() {
 		else {
 			const user = {
 				username,
-				password
+				password,
 			};
 			login(user)
 				.then(() => navigate("/"))
-				.catch(err => setErrors(err));
+				.catch((err) => setErrors(err));
 		}
 	};
 
 	return userLoading ? (
 		<Loading />
 	) : (
-		<div className={classes.container}>
+		<div style={{ ...sxStyles.container }}>
 			<Typography variant="h4" gutterBottom color="secondary">
 				LOGIN
 			</Typography>
 			{errors.login && (
-				<div className={classes.errors}>
+				<div style={{ ...sxStyles.errors }}>
 					<p>{errors.login}</p>
 				</div>
 			)}
@@ -107,21 +102,33 @@ export default function Login() {
 					label="Username"
 					name="username"
 					fullWidth
+					variant="standard"
 					error={errors.username ? true : false}
 					helperText={errors.username}
 					onChange={handleChange}
-					className={classes.inputField}
+					sx={(theme) => ({
+						...sxStyles.inputField,
+						[theme.breakpoints.down("xs")]: {
+							width: 250,
+						},
+					})}
 				/>
 				<TextField
 					label="Password"
 					name="password"
 					type={showPassword ? "text" : "password"}
 					fullWidth
+					variant="standard"
 					error={errors.password ? true : false}
 					helperText={errors.password}
 					onChange={handleChange}
 					autoComplete="current-password"
-					className={classes.inputField}
+					sx={(theme) => ({
+						...sxStyles.inputField,
+						[theme.breakpoints.down("xs")]: {
+							width: 250,
+						},
+					})}
 					InputProps={{
 						endAdornment: (
 							<InputAdornment position="end">
@@ -132,7 +139,7 @@ export default function Login() {
 									{showPassword ? <Visibility /> : <VisibilityOff />}
 								</IconButton>
 							</InputAdornment>
-						)
+						),
 					}}
 				/>
 				<span>
@@ -142,7 +149,7 @@ export default function Login() {
 					type="submit"
 					variant="contained"
 					color="secondary"
-					className={classes.submitButton}
+					sx={{ ...sxStyles.submitButton }}
 				>
 					login
 				</Button>

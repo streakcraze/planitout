@@ -11,38 +11,31 @@ import Login from "./pages/login";
 import Signup from "./pages/signup";
 
 //MUI
-import { makeStyles } from "@mui/styles";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 
-const useStyles = makeStyles(theme => ({
+const sxStyles = {
 	container: {
-		margin: "20px 0",
 		display: "flex",
 		flexDirection: "column",
 		width: "100%",
 		minHeight: "100vh",
 		alignItems: "center",
 		justifyContent: "center",
-		"& .app-name": {
-			marginBottom: 10,
-			[theme.breakpoints.down("xs")]: {
-				textTransform: "capitalize"
-			},
-			[theme.breakpoints.up("sm")]: {
-				textTransform: "uppercase"
-			}
-		}
-	}
-}));
+	},
+};
 
 function App() {
-	const classes = useStyles();
 	const { loadUser, isAuthenticated } = useContext(UserContext);
 	const [auth, setAuth] = useState(false);
 
 	useEffect(() => {
-		loadUser().then(() => setAuth(true));
+		loadUser()
+			.then(() => setAuth(true))
+			.catch((err) => {
+				console.log(err.loadUser);
+				setAuth(true);
+			});
 	}, []);
 
 	const handleLogout = () => {
@@ -55,9 +48,9 @@ function App() {
 	return (
 		<>
 			{auth ? (
-				<div className={classes.container}>
-					<Typography variant="h4" gutterBottom className="app-name">
-						budget calculator
+				<div style={{ ...sxStyles.container }}>
+					<Typography variant="h4" gutterBottom>
+						BUDGET CALCULATOR
 					</Typography>
 					{isAuthenticated && (
 						<span
@@ -69,10 +62,18 @@ function App() {
 					)}
 					<Paper elevation={3}>
 						<Routes>
-							<Route exact path="/" element={<ProtectedRoute component={Home} />} />
+							<Route
+								exact
+								path="/"
+								element={<ProtectedRoute component={Home} />}
+							/>
 							<Route exact path="/login" element={<Login />} />
 							<Route exact path="/signup" element={<Signup />} />
-							<Route exact path="/items/:category" element={<ProtectedRoute component={Dashboard} />} />
+							<Route
+								exact
+								path="/items/:category"
+								element={<ProtectedRoute component={Dashboard} />}
+							/>
 							<Route path="*" element={() => "404 NOT FOUND"} />
 						</Routes>
 					</Paper>

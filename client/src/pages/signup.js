@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 
 //MUI
-import { makeStyles } from "@mui/styles";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -13,37 +12,33 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Button from "@mui/material/Button";
 
-const useStyles = makeStyles(theme => ({
+const sxStyles = {
 	container: {
 		padding: 30,
 		display: "flex",
 		flexDirection: "column",
 		justifyContent: "center",
-		alignItems: "center"
+		alignItems: "center",
 	},
 	inputField: {
 		display: "block",
-		marginBottom: 30,
+		marginBottom: 5,
 		width: 300,
-		[theme.breakpoints.down("xs")]: {
-			width: 250
-		}
 	},
 	submitButton: {
 		display: "block",
 		margin: "20px auto 0",
-		width: 100
+		width: 100,
 	},
 	errors: {
 		backgroundColor: "#f4f4f4",
 		padding: 10,
 		lineHeight: "0",
-		textAlign: "center"
-	}
-}));
+		textAlign: "center",
+	},
+};
 
 export default function Login() {
-	const classes = useStyles();
 	const { register, userLoading } = useContext(UserContext);
 	const navigate = useNavigate();
 	const [username, setUsername] = useState("");
@@ -52,7 +47,7 @@ export default function Login() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [errors, setErrors] = useState({});
 
-	const handleChange = e => {
+	const handleChange = (e) => {
 		const { name, value } = e.target;
 		switch (name) {
 			case "username":
@@ -73,11 +68,11 @@ export default function Login() {
 		setShowPassword(!showPassword);
 	};
 
-	const handleMouseDownPassword = event => {
+	const handleMouseDownPassword = (event) => {
 		event.preventDefault();
 	};
 
-	const handleSubmit = e => {
+	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (username.trim() === "")
 			setErrors({ ...errors, username: "field must not be empty" });
@@ -88,7 +83,7 @@ export default function Login() {
 		else if (username.trim().length < 2 || username.trim().length > 15)
 			setErrors({
 				...errors,
-				username: "username must be between 2 and 15 characters long"
+				username: "username must be between 2 and 15 characters long",
 			});
 		else if (email.trim().length > 30)
 			setErrors({ ...errors, email: "email is too long" });
@@ -101,25 +96,25 @@ export default function Login() {
 		else if (password.trim().length < 8 || password.trim().length > 20)
 			setErrors({
 				...errors,
-				password: "password must be between 8 and 20 characters long"
+				password: "password must be between 8 and 20 characters long",
 			});
 		else {
 			const newUser = { username, email, password };
 			register(newUser)
 				.then(() => navigate("/"))
-				.catch(err => setErrors(err));
+				.catch((err) => setErrors(err));
 		}
 	};
 
 	return userLoading ? (
 		<Loading />
 	) : (
-		<div className={classes.container}>
+		<div style={{ ...sxStyles.container }}>
 			<Typography variant="h4" gutterBottom color="secondary">
 				SIGNUP
 			</Typography>
 			{errors.register && (
-				<div className={classes.errors}>
+				<div style={{ ...sxStyles.errors }}>
 					<p>{errors.register}</p>
 				</div>
 			)}
@@ -131,8 +126,14 @@ export default function Login() {
 					error={errors.username ? true : false}
 					helperText={errors.username}
 					fullWidth
+					variant="standard"
 					onChange={handleChange}
-					className={classes.inputField}
+					sx={(theme) => ({
+						...sxStyles.inputField,
+						[theme.breakpoints.down("xs")]: {
+							width: 250,
+						},
+					})}
 				/>
 				<TextField
 					label="Email"
@@ -141,8 +142,14 @@ export default function Login() {
 					error={errors.email ? true : false}
 					helperText={errors.email}
 					fullWidth
+					variant="standard"
 					onChange={handleChange}
-					className={classes.inputField}
+					sx={(theme) => ({
+						...sxStyles.inputField,
+						[theme.breakpoints.down("xs")]: {
+							width: 250,
+						},
+					})}
 				/>
 				<TextField
 					label="Password"
@@ -152,9 +159,15 @@ export default function Login() {
 					error={errors.password ? true : false}
 					helperText={errors.password}
 					fullWidth
+					variant="standard"
 					onChange={handleChange}
 					autoComplete="current-password"
-					className={classes.inputField}
+					sx={(theme) => ({
+						...sxStyles.inputField,
+						[theme.breakpoints.down("xs")]: {
+							width: 250,
+						},
+					})}
 					InputProps={{
 						endAdornment: (
 							<InputAdornment position="end">
@@ -165,7 +178,7 @@ export default function Login() {
 									{showPassword ? <Visibility /> : <VisibilityOff />}
 								</IconButton>
 							</InputAdornment>
-						)
+						),
 					}}
 				/>
 				<span>
@@ -175,7 +188,7 @@ export default function Login() {
 					type="submit"
 					variant="contained"
 					color="secondary"
-					className={classes.submitButton}
+					sx={{ ...sxStyles.submitButton }}
 				>
 					signup
 				</Button>
