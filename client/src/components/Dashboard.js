@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import ReactLoading from "react-loading";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { BudgetContext } from "../context/BudgetContext";
 import BudgetForm from "./BudgetForm";
 import BudgetTable from "./BudgetTable";
@@ -18,7 +18,7 @@ import Fade from "@mui/material/Fade";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	header: {
 		display: "flex",
 		justifyContent: "space-between",
@@ -28,17 +28,17 @@ const useStyles = makeStyles(theme => ({
 			textDecoration: "none",
 			color: "black",
 			[theme.breakpoints.down("xs")]: {
-				margin: "20px 10px 0"
-			}
-		}
+				margin: "20px 10px 0",
+			},
+		},
 	},
 	category: {
 		display: "flex",
 		textTransform: "capitalize",
 		margin: "15px 15px 0",
 		"& .category-button": {
-			paddingBottom: 10
-		}
+			paddingBottom: 10,
+		},
 	},
 	loadingUI: {
 		position: "absolute",
@@ -46,33 +46,31 @@ const useStyles = makeStyles(theme => ({
 		top: "60%",
 		transform: "translate(-50%, -50%)",
 		[theme.breakpoints.down("xs")]: {
-			top: "75%"
-		}
+			top: "75%",
+		},
 	},
 	modal: {
 		display: "flex",
 		alignItems: "center",
-		justifyContent: "center"
+		justifyContent: "center",
 	},
 	paper: {
 		backgroundColor: theme.palette.background.paper,
 		border: "2px solid #000",
 		boxShadow: theme.shadows[5],
-		padding: theme.spacing(2, 4, 3)
+		padding: theme.spacing(2, 4, 3),
 	},
 	inputField: {
-		marginBottom: 30
+		marginBottom: 30,
 	},
 	submitButton: {
 		display: "block",
-		margin: "0 auto"
-	}
+		margin: "0 auto",
+	},
 }));
 
-export default function Dashboard({ match }) {
-	const {
-		params: { category }
-	} = match;
+export default function Dashboard() {
+	const { category } = useParams();
 	const classes = useStyles();
 	const navigate = useNavigate();
 	let {
@@ -81,9 +79,9 @@ export default function Dashboard({ match }) {
 		getItems,
 		itemsLoading,
 		deleteItems,
-		updateCategory
+		updateCategory,
 	} = useContext(BudgetContext);
-	items = items.filter(item => item.category === category);
+	items = items.filter((item) => item.category === category);
 	const [open, setOpen] = useState(false);
 	const [update, setUpdate] = useState("");
 	const [error, setError] = useState(null);
@@ -100,11 +98,11 @@ export default function Dashboard({ match }) {
 		setOpen(false);
 	};
 
-	const handleChange = e => {
+	const handleChange = (e) => {
 		setUpdate(e.target.value);
 	};
 
-	const handleSubmit = e => {
+	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (update.trim() === "") setError("field must not be empty");
 		else if (categories.indexOf(update) !== -1)
@@ -120,7 +118,7 @@ export default function Dashboard({ match }) {
 
 	const handleDelete = () => {
 		if (window.confirm("Delete Category?")) {
-			deleteItems(items.map(item => item._id));
+			deleteItems(items.map((item) => item._id));
 			navigate("/");
 		}
 	};
@@ -162,7 +160,7 @@ export default function Dashboard({ match }) {
 				closeAfterTransition
 				BackdropComponent={Backdrop}
 				BackdropProps={{
-					timeout: 500
+					timeout: 500,
 				}}
 			>
 				<Fade in={open}>
