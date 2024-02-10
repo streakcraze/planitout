@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { BudgetContext } from "../context/BudgetContext";
 import TableToolbar from "./TableToolbar";
-import clsx from "clsx";
 
 //MUI
 import { useMediaQuery } from "@mui/material";
@@ -98,9 +97,11 @@ export default function BudgetTable({ category }) {
 										key={item._id}
 										hover
 										onClick={(event) => handleClick(event, item._id)}
-										className={clsx({
-											[sxStyles.highlight]: selected.indexOf(item._id) !== -1,
-										})}
+										sx={
+											selected.indexOf(item._id) !== -1
+												? { ...sxStyles.highlight, cursor: "pointer" }
+												: { cursor: "pointer" }
+										}
 									>
 										<TableCell component="th" scope="row">
 											{item.name}

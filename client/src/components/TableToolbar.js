@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import clsx from "clsx";
 import { BudgetContext } from "../context/BudgetContext";
 
 //MUI
@@ -31,9 +30,7 @@ export default function TableToolbar({ selected, handleDelete }) {
 
 	return (
 		<Toolbar
-			className={clsx(sxStyles.root, {
-				[sxStyles.highlight]: selected.length > 0,
-			})}
+			sx={selected.length > 0 ? { ...sxStyles.highlight } : {}}
 			variant="dense"
 		>
 			<Typography
