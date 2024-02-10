@@ -34,7 +34,6 @@ export default function UserContextProvider(props) {
 					if (err.code === "ERR_NETWORK") {
 						window.alert(err.message + ": Check your internet connection");
 					} else {
-						console.log(err);
 						reject({ register: err.response.data.msg });
 					}
 				});
@@ -65,7 +64,6 @@ export default function UserContextProvider(props) {
 					if (err.code === "ERR_NETWORK") {
 						window.alert(err.message + ": Check your internet connection");
 					} else {
-						console.log(err);
 						reject({ login: err.response.data.msg });
 					}
 				});
@@ -96,7 +94,6 @@ export default function UserContextProvider(props) {
 					if (err.code === "ERR_NETWORK") {
 						window.alert(err.message + ": Check your internet connection");
 					} else {
-						console.log(err);
 						reject({ loadUser: err.response.data.msg });
 					}
 				});

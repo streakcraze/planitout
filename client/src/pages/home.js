@@ -121,12 +121,9 @@ export default function Home() {
 				CATEGORIES
 			</Typography>
 			{itemsLoading ? (
-				<ReactLoading
-					type={"bars"}
-					color={"#3792cb"}
-					width={100}
-					style={{ ...sxStyles.loadingUI }}
-				/>
+				<div style={{ ...sxStyles.loadingUI }}>
+					<ReactLoading type={"bars"} color={"#3792cb"} width={100} />
+				</div>
 			) : (
 				categories && (
 					<div

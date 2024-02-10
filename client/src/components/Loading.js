@@ -3,26 +3,23 @@ import ReactLoading from "react-loading";
 
 export default function Loading() {
 	const sxStyles = {
-		container: {
+		root: {
 			height: "100vh",
 			background: "linear-gradient(100deg, #ff9800, #cddc39)",
 		},
-		loadingUI: {
+		container: {
 			position: "absolute",
 			left: "50%",
-			top: "35%",
+			top: "50%",
 			transform: "translate(-50%, -50%)",
 		},
 	};
 
 	return (
-		<div style={{ ...sxStyles.container }}>
-			<ReactLoading
-				type={"spokes"}
-				color={"blue"}
-				width={200}
-				style={{ ...sxStyles.loadingUI }}
-			/>
+		<div style={{ ...sxStyles.root }}>
+			<div style={{ ...sxStyles.container }}>
+				<ReactLoading type={"spokes"} color={"blue"} height={200} width={200} />
+			</div>
 		</div>
 	);
 }

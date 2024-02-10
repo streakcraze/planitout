@@ -126,8 +126,8 @@ export default function BudgetTable({ category }) {
 				rowsPerPage={rowsPerPage}
 				labelRowsPerPage={"Rows:"}
 				page={page}
-				onChangePage={handleChangePage}
-				onChangeRowsPerPage={handleChangeRowsPerPage}
+				onPageChange={handleChangePage}
+				onRowsPerPageChange={handleChangeRowsPerPage}
 			/>
 		</Paper>
 	);

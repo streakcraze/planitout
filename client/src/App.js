@@ -22,6 +22,7 @@ const sxStyles = {
 		minHeight: "100vh",
 		alignItems: "center",
 		justifyContent: "center",
+		margin: "10px auto",
 	},
 };
 

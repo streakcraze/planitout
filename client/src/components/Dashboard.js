@@ -127,12 +127,9 @@ export default function Dashboard() {
 	return (
 		<>
 			{itemsLoading && (
-				<ReactLoading
-					type={"bars"}
-					color={"#3792cb"}
-					width={100}
-					style={{ ...sxStyles.loadingUI }}
-				/>
+				<div style={{ ...sxStyles.loadingUI }}>
+					<ReactLoading type={"bars"} color={"#3792cb"} width={100} />
+				</div>
 			)}
 			<div style={{ ...sxStyles.header }}>
 				<div style={{ ...sxStyles.category }}>
