@@ -1,29 +1,14 @@
 import React, { useContext } from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
-export const ProtectedRoute = ({ component: Component, ...rest }) => {
+export const ProtectedRoute = ({ component: Component }) => {
 	const { isAuthenticated } = useContext(UserContext);
+	const location = useLocation();
 
-	return (
-		<Route
-			{...rest}
-			render={props => {
-				if (isAuthenticated) {
-					return <Component {...props} />;
-				} else {
-					return (
-						<Redirect
-							to={{
-								pathname: "/login",
-								state: {
-									from: props.location
-								}
-							}}
-						/>
-					);
-				}
-			}}
-		></Route>
+	return isAuthenticated ? (
+		<Component />
+	) : (
+		<Navigate to="/login" state={{ from: location }} />
 	);
 };

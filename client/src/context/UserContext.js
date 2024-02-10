@@ -7,7 +7,6 @@ export default function UserContextProvider(props) {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [user, setUser] = useState({});
 	const [userLoading, setUserLoading] = useState(false);
-	const [authErrors, setAuthErrors] = useState({});
 
 	const URI = "https://planitout-server.vercel.app";
 
@@ -32,7 +31,11 @@ export default function UserContextProvider(props) {
 				})
 				.catch((err) => {
 					setUserLoading(false);
-					reject({ register: err.response.data.msg });
+					if (err.code === "ERR_NETWORK") {
+						window.alert(err.message + ": Check your internet connection");
+					} else {
+						reject({ register: err.response.data.msg });
+					}
 				});
 		});
 	};
@@ -58,13 +61,17 @@ export default function UserContextProvider(props) {
 				})
 				.catch((err) => {
 					setUserLoading(false);
-					reject({ login: err.response.data.msg });
+					if (err.code === "ERR_NETWORK") {
+						window.alert(err.message + ": Check your internet connection");
+					} else {
+						reject({ login: err.response.data.msg });
+					}
 				});
 		});
 	};
 
 	const loadUser = () => {
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			const config = {
 				headers: {
 					"Content-type": "application/json",
@@ -80,12 +87,15 @@ export default function UserContextProvider(props) {
 				.get(URI + "/api/users", config)
 				.then((res) => {
 					setIsAuthenticated(true);
-					setUser(res.data);
+					setUser(res.data.user);
 					resolve();
 				})
 				.catch((err) => {
-					setAuthErrors({ loadUser: err.response.data.msg });
-					resolve();
+					if (err.code === "ERR_NETWORK") {
+						window.alert(err.message + ": Check your internet connection");
+					} else {
+						reject({ loadUser: err.response.data.msg });
+					}
 				});
 		});
 	};
@@ -96,7 +106,6 @@ export default function UserContextProvider(props) {
 				isAuthenticated,
 				user,
 				userLoading,
-				authErrors,
 				register,
 				login,
 				loadUser,

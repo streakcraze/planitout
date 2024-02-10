@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { UserContext } from "./context/UserContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Dashboard from "./components/Dashboard";
@@ -11,38 +11,32 @@ import Login from "./pages/login";
 import Signup from "./pages/signup";
 
 //MUI
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
 
-const useStyles = makeStyles(theme => ({
+const sxStyles = {
 	container: {
-		margin: "20px 0",
 		display: "flex",
 		flexDirection: "column",
 		width: "100%",
 		minHeight: "100vh",
 		alignItems: "center",
 		justifyContent: "center",
-		"& .app-name": {
-			marginBottom: 10,
-			[theme.breakpoints.down("xs")]: {
-				textTransform: "capitalize"
-			},
-			[theme.breakpoints.up("sm")]: {
-				textTransform: "uppercase"
-			}
-		}
-	}
-}));
+		margin: "10px auto",
+	},
+};
 
 function App() {
-	const classes = useStyles();
 	const { loadUser, isAuthenticated } = useContext(UserContext);
 	const [auth, setAuth] = useState(false);
 
 	useEffect(() => {
-		loadUser().then(() => setAuth(true));
+		loadUser()
+			.then(() => setAuth(true))
+			.catch((err) => {
+				console.log(err.loadUser);
+				setAuth(true);
+			});
 	}, []);
 
 	const handleLogout = () => {
@@ -55,9 +49,9 @@ function App() {
 	return (
 		<>
 			{auth ? (
-				<div className={classes.container}>
-					<Typography variant="h4" gutterBottom className="app-name">
-						budget calculator
+				<div style={{ ...sxStyles.container }}>
+					<Typography variant="h4" gutterBottom>
+						BUDGET CALCULATOR
 					</Typography>
 					{isAuthenticated && (
 						<span
@@ -68,17 +62,21 @@ function App() {
 						</span>
 					)}
 					<Paper elevation={3}>
-						<Switch>
-							<ProtectedRoute exact path="/" component={Home} />
-							<Route exact path="/login" component={Login} />
-							<Route exact path="/signup" component={Signup} />
-							<ProtectedRoute
+						<Routes>
+							<Route
+								exact
+								path="/"
+								element={<ProtectedRoute component={Home} />}
+							/>
+							<Route exact path="/login" element={<Login />} />
+							<Route exact path="/signup" element={<Signup />} />
+							<Route
 								exact
 								path="/items/:category"
-								component={Dashboard}
+								element={<ProtectedRoute component={Dashboard} />}
 							/>
-							<Route path="*" component={() => "404 NOT FOUND"} />
-						</Switch>
+							<Route path="*" element={() => "404 NOT FOUND"} />
+						</Routes>
 					</Paper>
 				</div>
 			) : (
