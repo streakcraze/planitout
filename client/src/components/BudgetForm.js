@@ -2,34 +2,17 @@ import React, { useState, useContext, useEffect, createRef } from "react";
 import { BudgetContext } from "../context/BudgetContext";
 
 //MUI
-import { makeStyles } from "@mui/styles";
+import { useMediaQuery } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-const useStyles = makeStyles(theme => ({
-	inputField: {
-		margin: 20,
-		width: 180,
-		[theme.breakpoints.down("xs")]: {
-			display: "block",
-			width: 250
-		}
-	},
-	submitButton: {
-		display: "block",
-		margin: "0 auto"
-	}
-}));
-
 export default function Form({ category }) {
-	const classes = useStyles();
+	const smallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
 	const { addItems, editItem, updateItem } = useContext(BudgetContext);
+
 	let nameRef = createRef();
 	let priceRef = createRef();
-
-	const [name, setName] = useState("");
-	const [price, setPrice] = useState("");
-	const [errors, setErrors] = useState({});
 
 	useEffect(() => {
 		if (editItem) {
@@ -38,7 +21,23 @@ export default function Form({ category }) {
 		}
 	}, [editItem]);
 
-	const handleSubmit = e => {
+	const [name, setName] = useState("");
+	const [price, setPrice] = useState("");
+	const [errors, setErrors] = useState({});
+
+	const sxStyles = {
+		inputField: {
+			margin: "20px",
+			width: smallScreen ? 250 : 180,
+			display: smallScreen ? "block" : "",
+		},
+		submitButton: {
+			display: "block",
+			margin: "0 auto",
+		},
+	};
+
+	const handleSubmit = (e) => {
 		e.preventDefault();
 		let bundle = {};
 		if (!editItem) {
@@ -46,7 +45,7 @@ export default function Form({ category }) {
 				bundle = {
 					name,
 					price,
-					category
+					category,
 				};
 				addItems(bundle);
 				setName("");
@@ -55,14 +54,14 @@ export default function Form({ category }) {
 		} else {
 			bundle = {
 				name: nameRef.current.value,
-				price: parseInt(priceRef.current.value, 10)
+				price: parseInt(priceRef.current.value, 10),
 			};
 			updateItem({ _id: editItem._id, ...bundle });
 		}
 		e.target.reset();
 	};
 
-	const handleChange = e => {
+	const handleChange = (e) => {
 		const { name, value } = e.target;
 		switch (name) {
 			case "name":
@@ -93,9 +92,10 @@ export default function Form({ category }) {
 				name="name"
 				error={errors.name ? true : false}
 				fullWidth
+				variant="standard"
 				helperText={errors.name ? errors.name : ""}
 				onChange={handleChange}
-				className={classes.inputField}
+				sx={{ ...sxStyles.inputField }}
 				InputLabelProps={{ shrink: true }}
 				inputRef={nameRef}
 			/>
@@ -104,9 +104,10 @@ export default function Form({ category }) {
 				name="price"
 				error={errors.price ? true : false}
 				fullWidth
+				variant="standard"
 				helperText={errors.price}
 				onChange={handleChange}
-				className={classes.inputField}
+				sx={{ ...sxStyles.inputField }}
 				InputLabelProps={{ shrink: true }}
 				inputRef={priceRef}
 			/>
@@ -114,7 +115,7 @@ export default function Form({ category }) {
 				type="submit"
 				variant="contained"
 				color="secondary"
-				className={classes.submitButton}
+				sx={{ ...sxStyles.submitButton }}
 			>
 				{editItem ? "edit" : "submit"}
 			</Button>

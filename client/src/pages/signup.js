@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 
 //MUI
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -12,40 +13,43 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Button from "@mui/material/Button";
 
-const sxStyles = {
-	container: {
-		padding: 30,
-		display: "flex",
-		flexDirection: "column",
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	inputField: {
-		display: "block",
-		marginBottom: 5,
-		width: 300,
-	},
-	submitButton: {
-		display: "block",
-		margin: "20px auto 0",
-		width: 100,
-	},
-	errors: {
-		backgroundColor: "#f4f4f4",
-		padding: 10,
-		lineHeight: "0",
-		textAlign: "center",
-	},
-};
-
 export default function Login() {
-	const { register, userLoading } = useContext(UserContext);
 	const navigate = useNavigate();
+	const smallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+	const { register, userLoading } = useContext(UserContext);
+
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [errors, setErrors] = useState({});
+
+	const sxStyles = {
+		container: {
+			padding: 30,
+			display: "flex",
+			flexDirection: "column",
+			justifyContent: "center",
+			alignItems: "center",
+		},
+		inputField: {
+			display: "block",
+			marginBottom: 5,
+			width: smallScreen ? 250 : 300,
+		},
+		submitButton: {
+			display: "block",
+			margin: "20px auto 0",
+			width: 100,
+		},
+		errors: {
+			backgroundColor: "#f4f4f4",
+			padding: 10,
+			lineHeight: "0",
+			textAlign: "center",
+		},
+	};
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -128,12 +132,7 @@ export default function Login() {
 					fullWidth
 					variant="standard"
 					onChange={handleChange}
-					sx={(theme) => ({
-						...sxStyles.inputField,
-						[theme.breakpoints.down("xs")]: {
-							width: 250,
-						},
-					})}
+					sx={{ ...sxStyles.inputField }}
 				/>
 				<TextField
 					label="Email"
@@ -144,12 +143,7 @@ export default function Login() {
 					fullWidth
 					variant="standard"
 					onChange={handleChange}
-					sx={(theme) => ({
-						...sxStyles.inputField,
-						[theme.breakpoints.down("xs")]: {
-							width: 250,
-						},
-					})}
+					sx={{ ...sxStyles.inputField }}
 				/>
 				<TextField
 					label="Password"
@@ -162,12 +156,7 @@ export default function Login() {
 					variant="standard"
 					onChange={handleChange}
 					autoComplete="current-password"
-					sx={(theme) => ({
-						...sxStyles.inputField,
-						[theme.breakpoints.down("xs")]: {
-							width: 250,
-						},
-					})}
+					sx={{ ...sxStyles.inputField }}
 					InputProps={{
 						endAdornment: (
 							<InputAdornment position="end">

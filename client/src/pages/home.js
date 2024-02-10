@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { BudgetContext } from "../context/BudgetContext";
-import { useNavigate } from "react-router-dom";
 import ReactLoading from "react-loading";
+import Category from "../components/Category";
 
 //MUI
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -11,22 +11,23 @@ import AddIcon from "@mui/icons-material/Add";
 import Modal from "@mui/material/Modal";
 import Backdrop from "@mui/material/Backdrop";
 import Fade from "@mui/material/Fade";
+import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 export default function Home() {
 	const smallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-	const navigate = useNavigate();
+
 	const { categories, addCategory, itemsLoading, getItems } =
 		useContext(BudgetContext);
-	const [open, setOpen] = useState(false);
-	const [category, setCategory] = useState("");
-	const [error, setError] = useState(null);
-	const [hoverStyles, setHoverStyles] = useState({});
 
 	useEffect(() => {
 		getItems();
 	}, []);
+
+	const [open, setOpen] = useState(false);
+	const [category, setCategory] = useState("");
+	const [error, setError] = useState(null);
 
 	const sxStyles = {
 		root: {
@@ -60,13 +61,17 @@ export default function Home() {
 			justifyContent: "center",
 		},
 		paper: {
+			position: "absolute",
+			top: "50%",
+			left: "50%",
+			transform: "translate(-50%, -50%)",
 			backgroundColor: (theme) => theme.palette.background.paper,
 			border: "2px solid #000",
 			boxShadow: (theme) => theme.shadows[5],
 			padding: (theme) => theme.spacing(2, 4, 3),
 		},
 		inputField: {
-			marginBottom: 30,
+			marginBottom: "30px",
 		},
 		submitButton: {
 			display: "block",
@@ -129,27 +134,12 @@ export default function Home() {
 							...sxStyles.container,
 						}}
 					>
-						{categories.map((category, i) => (
-							<button
-								key={i}
-								style={{
-									...sxStyles.category,
-									...hoverStyles,
-								}}
-								onMouseEnter={(e) => {
-									setHoverStyles({
-										cursor: "pointer",
-										backgroundColor: "#a9a9a9",
-										transform: "scale(1.05)",
-									});
-								}}
-								onMouseLeave={(e) => {
-									setHoverStyles({});
-								}}
-								onClick={() => navigate(`/items/${category}`)}
-							>
-								{category}
-							</button>
+						{categories.map((category, index) => (
+							<Category
+								category={category}
+								index={index}
+								sxStyles={sxStyles.category}
+							/>
 						))}
 					</div>
 				)
@@ -162,18 +152,21 @@ export default function Home() {
 				open={open}
 				onClose={handleClose}
 				closeAfterTransition
-				BackdropComponent={Backdrop}
-				BackdropProps={{
-					timeout: 500,
+				slots={{ backdrop: Backdrop }}
+				slotProps={{
+					backdrop: {
+						timeout: 500,
+					},
 				}}
 			>
 				<Fade in={open}>
-					<div style={{ ...sxStyles.paper }}>
+					<Box sx={{ ...sxStyles.paper }}>
 						<form noValidate autoComplete="off" onSubmit={handleSubmit}>
 							<TextField
 								label="Name"
 								name="category"
 								fullWidth
+								variant="standard"
 								error={error ? true : false}
 								helperText={error}
 								onChange={handleChange}
@@ -188,7 +181,7 @@ export default function Home() {
 								submit
 							</Button>
 						</form>
-					</div>
+					</Box>
 				</Fade>
 			</Modal>
 		</div>

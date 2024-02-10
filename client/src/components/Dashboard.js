@@ -7,7 +7,7 @@ import BudgetTable from "./BudgetTable";
 import BudgetTotal from "./BudgetTotal";
 
 //MUI
-import { makeStyles } from "@mui/styles";
+import { useMediaQuery } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
@@ -15,64 +15,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Modal from "@mui/material/Modal";
 import Backdrop from "@mui/material/Backdrop";
 import Fade from "@mui/material/Fade";
+import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-const useStyles = makeStyles((theme) => ({
-	header: {
-		display: "flex",
-		justifyContent: "space-between",
-		margin: 5,
-		"& .back-button": {
-			margin: "20px 20px 0",
-			textDecoration: "none",
-			color: "black",
-			[theme.breakpoints.down("xs")]: {
-				margin: "20px 10px 0",
-			},
-		},
-	},
-	category: {
-		display: "flex",
-		textTransform: "capitalize",
-		margin: "15px 15px 0",
-		"& .category-button": {
-			paddingBottom: 10,
-		},
-	},
-	loadingUI: {
-		position: "absolute",
-		left: "50%",
-		top: "60%",
-		transform: "translate(-50%, -50%)",
-		[theme.breakpoints.down("xs")]: {
-			top: "75%",
-		},
-	},
-	modal: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	paper: {
-		backgroundColor: theme.palette.background.paper,
-		border: "2px solid #000",
-		boxShadow: theme.shadows[5],
-		padding: theme.spacing(2, 4, 3),
-	},
-	inputField: {
-		marginBottom: 30,
-	},
-	submitButton: {
-		display: "block",
-		margin: "0 auto",
-	},
-}));
-
 export default function Dashboard() {
+	const smallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 	const { category } = useParams();
-	const classes = useStyles();
 	const navigate = useNavigate();
+
 	let {
 		items,
 		categories,
@@ -82,13 +33,63 @@ export default function Dashboard() {
 		updateCategory,
 	} = useContext(BudgetContext);
 	items = items.filter((item) => item.category === category);
-	const [open, setOpen] = useState(false);
-	const [update, setUpdate] = useState("");
-	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		getItems();
 	}, []);
+
+	const [open, setOpen] = useState(false);
+	const [update, setUpdate] = useState("");
+	const [error, setError] = useState(null);
+
+	const sxStyles = {
+		header: {
+			display: "flex",
+			justifyContent: "space-between",
+			margin: 5,
+		},
+		category: {
+			display: "flex",
+			textTransform: "capitalize",
+			margin: "15px 15px 0",
+		},
+		categoryButton: {
+			paddingBottom: 5,
+		},
+		backButton: {
+			margin: smallScreen ? "20px 10px 0" : "20px 20px 0",
+			textDecoration: "none",
+			color: "black",
+		},
+		loadingUI: {
+			position: "absolute",
+			left: "50%",
+			top: smallScreen ? "75%" : "60%",
+			transform: "translate(-50%, -50%)",
+		},
+		modal: {
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center",
+		},
+		paper: {
+			position: "absolute",
+			top: "50%",
+			left: "50%",
+			transform: "translate(-50%, -50%)",
+			backgroundColor: (theme) => theme.palette.background.paper,
+			border: "2px solid #000",
+			boxShadow: (theme) => theme.shadows[5],
+			padding: (theme) => theme.spacing(2, 4, 3),
+		},
+		inputField: {
+			marginBottom: "30px",
+		},
+		submitButton: {
+			display: "block",
+			margin: "0 auto",
+		},
+	};
 
 	const handleOpen = () => {
 		setOpen(true);
@@ -130,22 +131,28 @@ export default function Dashboard() {
 					type={"bars"}
 					color={"#3792cb"}
 					width={100}
-					className={classes.loadingUI}
+					style={{ ...sxStyles.loadingUI }}
 				/>
 			)}
-			<div className={classes.header}>
-				<div className={classes.category}>
+			<div style={{ ...sxStyles.header }}>
+				<div style={{ ...sxStyles.category }}>
 					<Typography variant="h4" gutterBottom color="secondary">
 						{category}
 					</Typography>
 					<IconButton onClick={handleOpen} size="small">
-						<EditIcon color="secondary" className="category-button" />
+						<EditIcon
+							color="secondary"
+							style={{ ...sxStyles.categoryButton }}
+						/>
 					</IconButton>
 					<IconButton onClick={handleDelete} size="small">
-						<DeleteIcon color="secondary" className="category-button" />
+						<DeleteIcon
+							color="secondary"
+							style={{ ...sxStyles.categoryButton }}
+						/>
 					</IconButton>
 				</div>
-				<Link to="/" className="back-button">
+				<Link to="/" style={{ ...sxStyles.backButton }}>
 					&#8592;back
 				</Link>
 			</div>
@@ -154,37 +161,40 @@ export default function Dashboard() {
 			<BudgetTotal category={category} />
 
 			<Modal
-				className={classes.modal}
+				sx={{ ...sxStyles.modal }}
 				open={open}
 				onClose={handleClose}
 				closeAfterTransition
-				BackdropComponent={Backdrop}
-				BackdropProps={{
-					timeout: 500,
+				slots={{ backdrop: Backdrop }}
+				slotProps={{
+					backdrop: {
+						timeout: 500,
+					},
 				}}
 			>
 				<Fade in={open}>
-					<div className={classes.paper}>
+					<Box sx={{ ...sxStyles.paper }}>
 						<form noValidate autoComplete="off" onSubmit={handleSubmit}>
 							<TextField
 								label="Name"
 								name="category"
 								fullWidth
+								variant="standard"
 								error={error ? true : false}
 								helperText={error}
 								onChange={handleChange}
-								className={classes.inputField}
+								sx={{ ...sxStyles.inputField }}
 							/>
 							<Button
 								type="submit"
 								variant="contained"
 								color="secondary"
-								className={classes.submitButton}
+								sx={{ ...sxStyles.submitButton }}
 							>
-								edit
+								submit
 							</Button>
 						</form>
-					</div>
+					</Box>
 				</Fade>
 			</Modal>
 		</>
