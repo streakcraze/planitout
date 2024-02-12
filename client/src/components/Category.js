@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Category({ category, index, sxStyles }) {
+export default function Category({ category, sxStyles }) {
 	const navigate = useNavigate();
 	const [hoverStyles, setHoverStyles] = useState({});
 
 	return (
 		<button
-			key={index}
 			style={{
 				...sxStyles,
 				...hoverStyles,

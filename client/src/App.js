@@ -1,30 +1,21 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { UserContext } from "./context/UserContext";
-import { ProtectedRoute } from "./components/ProtectedRoute";
-import Dashboard from "./components/Dashboard";
-import Loading from "./components/Loading";
 
-//pages
+// pages
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 
-//MUI
+// components
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import Dashboard from "./components/Dashboard";
+import Loading from "./components/Loading";
+import Navbar from "./components/Navbar";
+
+// MUI
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-
-const sxStyles = {
-	container: {
-		display: "flex",
-		flexDirection: "column",
-		width: "100%",
-		minHeight: "100vh",
-		alignItems: "center",
-		justifyContent: "center",
-		margin: "10px auto",
-	},
-};
 
 function App() {
 	const { loadUser, isAuthenticated } = useContext(UserContext);
@@ -39,27 +30,28 @@ function App() {
 			});
 	}, []);
 
-	const handleLogout = () => {
-		if (window.confirm("Sure you want to log out?")) {
-			window.localStorage.removeItem("budget-token");
-			window.location.reload();
-		}
+	const sxStyles = {
+		container: {
+			display: "flex",
+			flexDirection: "column",
+			width: "100%",
+			minHeight: "100vh",
+			alignItems: "center",
+			justifyContent: "center",
+			margin: "10px auto",
+		},
 	};
 
 	return (
 		<>
 			{auth ? (
 				<div style={{ ...sxStyles.container }}>
-					<Typography variant="h4" gutterBottom>
-						BUDGET CALCULATOR
-					</Typography>
-					{isAuthenticated && (
-						<span
-							onClick={handleLogout}
-							style={{ marginBottom: 20, cursor: "pointer" }}
-						>
-							&#8592;logout
-						</span>
+					{isAuthenticated ? (
+						<Navbar />
+					) : (
+						<Typography variant="h4" gutterBottom>
+							BUDGET CALCULATOR
+						</Typography>
 					)}
 					<Paper elevation={3}>
 						<Routes>

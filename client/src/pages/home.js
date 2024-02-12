@@ -134,7 +134,7 @@ export default function Home() {
 						{categories.map((category, index) => (
 							<Category
 								category={category}
-								index={index}
+								key={index}
 								sxStyles={sxStyles.category}
 							/>
 						))}

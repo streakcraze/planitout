@@ -1,10 +1,11 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter as Router } from "react-router-dom";
+
 import App from "./App";
+import "./index.css";
 import UserContextProvider from "./context/UserContext";
 import BudgetContextProvider from "./context/BudgetContext";
-import { BrowserRouter as Router } from "react-router-dom";
-import "./index.css";
 
 //MUI
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -20,7 +21,10 @@ const theme = createTheme({
 	},
 });
 
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+root.render(
 	<ThemeProvider theme={theme}>
 		<UserContextProvider>
 			<BudgetContextProvider>
@@ -29,6 +33,5 @@ ReactDOM.render(
 				</Router>
 			</BudgetContextProvider>
 		</UserContextProvider>
-	</ThemeProvider>,
-	document.getElementById("root")
+	</ThemeProvider>
 );
