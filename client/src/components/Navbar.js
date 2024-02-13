@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // MUI
 import AppBar from "@mui/material/AppBar";
@@ -17,6 +18,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 export default function Navbar() {
+	const navigate = useNavigate();
 	const [mobileOpen, setMobileOpen] = useState(false);
 
 	const handleDrawerToggle = () => {
@@ -37,26 +39,37 @@ export default function Navbar() {
 		>
 			<List>
 				<ListItem key="0" disablePadding>
-					<ListItemButton sx={{ textAlign: "center" }}>
+					<ListItemButton
+						sx={{ textAlign: "center", textTransform: "uppercase" }}
+						onClick={() => navigate("/")}
+					>
 						<ListItemText primary="home" />
 					</ListItemButton>
 				</ListItem>
 				<Divider />
 				<ListItem key="1" disablePadding>
-					<ListItemButton sx={{ textAlign: "center" }}>
+					<ListItemButton
+						sx={{ textAlign: "center", textTransform: "uppercase" }}
+					>
 						<ListItemText primary="analytics" />
 					</ListItemButton>
 				</ListItem>
 				<Divider />
 				<ListItem key="2" disablePadding>
-					<ListItemButton sx={{ textAlign: "center" }}>
+					<ListItemButton
+						sx={{ textAlign: "center", textTransform: "uppercase" }}
+						onClick={() => navigate("/profile")}
+					>
 						<ListItemText primary="profile" />
 					</ListItemButton>
 				</ListItem>
 				<Divider />
 				<Divider sx={{ mt: 10 }} />
 				<ListItem key="3" disablePadding>
-					<ListItemButton sx={{ textAlign: "center" }} onClick={handleLogout}>
+					<ListItemButton
+						sx={{ textAlign: "center", textTransform: "uppercase" }}
+						onClick={handleLogout}
+					>
 						<ListItemText primary="logout" />
 					</ListItemButton>
 				</ListItem>
@@ -102,9 +115,16 @@ export default function Navbar() {
 								justifyContent: "space-around",
 							}}
 						>
-							<Button sx={{ color: "#fff" }}>home</Button>
+							<Button sx={{ color: "#fff" }} onClick={() => navigate("/")}>
+								home
+							</Button>
 							<Button sx={{ color: "#fff" }}>analytics</Button>
-							<Button sx={{ color: "#fff" }}>profile</Button>
+							<Button
+								sx={{ color: "#fff" }}
+								onClick={() => navigate("/profile")}
+							>
+								profile
+							</Button>
 						</Box>
 						<Box sx={{ flexGrow: 1, display: "flex", justifyContent: "end" }}>
 							<Button sx={{ color: "#fff" }} onClick={handleLogout}>

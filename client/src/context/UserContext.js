@@ -87,7 +87,7 @@ export default function UserContextProvider(props) {
 				.get(URI + "/api/users", config)
 				.then((res) => {
 					setIsAuthenticated(true);
-					setUser(res.data.user);
+					setUser(res.data);
 					resolve();
 				})
 				.catch((err) => {

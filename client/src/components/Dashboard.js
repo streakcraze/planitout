@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import ReactLoading from "react-loading";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { BudgetContext } from "../context/BudgetContext";
 import BudgetForm from "./BudgetForm";
 import BudgetTable from "./BudgetTable";
@@ -149,9 +149,9 @@ export default function Dashboard() {
 						/>
 					</IconButton>
 				</div>
-				<Link to="/" style={{ ...sxStyles.backButton }}>
+				<Navigate to="/" style={{ ...sxStyles.backButton }}>
 					&#8592;back
-				</Link>
+				</Navigate>
 			</div>
 			<BudgetForm category={category} />
 			<BudgetTable category={category} />

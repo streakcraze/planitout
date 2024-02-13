@@ -3,9 +3,10 @@ import { Routes, Route } from "react-router-dom";
 import { UserContext } from "./context/UserContext";
 
 // pages
-import Home from "./pages/home";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
+import Home from "./pages/home";
+import Profile from "./pages/profile";
 
 // components
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -55,13 +56,18 @@ function App() {
 					)}
 					<Paper elevation={3}>
 						<Routes>
+							<Route exact path="/login" element={<Login />} />
+							<Route exact path="/signup" element={<Signup />} />
 							<Route
 								exact
 								path="/"
 								element={<ProtectedRoute component={Home} />}
 							/>
-							<Route exact path="/login" element={<Login />} />
-							<Route exact path="/signup" element={<Signup />} />
+							<Route
+								exact
+								path="/profile"
+								element={<ProtectedRoute component={Profile} />}
+							/>
 							<Route
 								exact
 								path="/items/:category"
