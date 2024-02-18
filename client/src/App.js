@@ -7,6 +7,7 @@ import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Home from "./pages/home";
 import Profile from "./pages/profile";
+import EmailVerification from "./pages/email";
 
 // components
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -39,7 +40,7 @@ function App() {
 			minHeight: "100vh",
 			alignItems: "center",
 			justifyContent: "center",
-			margin: "10px auto",
+			margin: "40px auto",
 		},
 	};
 
@@ -58,6 +59,11 @@ function App() {
 						<Routes>
 							<Route exact path="/login" element={<Login />} />
 							<Route exact path="/signup" element={<Signup />} />
+							<Route
+								exact
+								path="/verifyEmail/:emailSent"
+								element={<EmailVerification />}
+							/>
 							<Route
 								exact
 								path="/"

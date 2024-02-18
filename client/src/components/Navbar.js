@@ -50,14 +50,6 @@ export default function Navbar() {
 				<ListItem key="1" disablePadding>
 					<ListItemButton
 						sx={{ textAlign: "center", textTransform: "uppercase" }}
-					>
-						<ListItemText primary="analytics" />
-					</ListItemButton>
-				</ListItem>
-				<Divider />
-				<ListItem key="2" disablePadding>
-					<ListItemButton
-						sx={{ textAlign: "center", textTransform: "uppercase" }}
 						onClick={() => navigate("/profile")}
 					>
 						<ListItemText primary="profile" />
@@ -83,7 +75,9 @@ export default function Navbar() {
 			<CssBaseline />
 			<AppBar
 				component="nav"
-				sx={{ background: "linear-gradient(100deg, #7F00FF, #311432)" }}
+				sx={{
+					background: "linear-gradient(100deg, #7F00FF, #311432)",
+				}}
 			>
 				<Toolbar>
 					<IconButton
@@ -118,7 +112,6 @@ export default function Navbar() {
 							<Button sx={{ color: "#fff" }} onClick={() => navigate("/")}>
 								home
 							</Button>
-							<Button sx={{ color: "#fff" }}>analytics</Button>
 							<Button
 								sx={{ color: "#fff" }}
 								onClick={() => navigate("/profile")}

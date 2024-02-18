@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
+const ejs = require("ejs");
 require("dotenv").config();
 
 const itemsRouter = require("./routes/items");
@@ -10,6 +11,9 @@ const usersRouter = require("./routes/users");
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "templates"));
 
 mongoose
 	.connect(`${process.env.mongoURI}`)

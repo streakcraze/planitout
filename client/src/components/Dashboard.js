@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import ReactLoading from "react-loading";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { BudgetContext } from "../context/BudgetContext";
 import BudgetForm from "./BudgetForm";
 import BudgetTable from "./BudgetTable";
@@ -51,13 +51,10 @@ export default function Dashboard() {
 		category: {
 			display: "flex",
 			textTransform: "capitalize",
-			margin: "15px 15px 0",
-		},
-		categoryButton: {
-			paddingBottom: 5,
+			margin: smallScreen ? "15px auto 0" : "15px 15px 0",
 		},
 		backButton: {
-			margin: smallScreen ? "20px 10px 0" : "20px 20px 0",
+			margin: smallScreen ? "20px auto 0" : "20px 20px 0",
 			textDecoration: "none",
 			color: "black",
 		},
@@ -133,25 +130,19 @@ export default function Dashboard() {
 			)}
 			<div style={{ ...sxStyles.header }}>
 				<div style={{ ...sxStyles.category }}>
-					<Typography variant="h4" gutterBottom color="secondary">
+					<Typography variant="h4" color="secondary">
 						{category}
 					</Typography>
 					<IconButton onClick={handleOpen} size="small">
-						<EditIcon
-							color="secondary"
-							style={{ ...sxStyles.categoryButton }}
-						/>
+						<EditIcon color="secondary" />
 					</IconButton>
 					<IconButton onClick={handleDelete} size="small">
-						<DeleteIcon
-							color="secondary"
-							style={{ ...sxStyles.categoryButton }}
-						/>
+						<DeleteIcon color="secondary" />
 					</IconButton>
 				</div>
-				<Navigate to="/" style={{ ...sxStyles.backButton }}>
+				<Link to="/" style={{ ...sxStyles.backButton }}>
 					&#8592;back
-				</Navigate>
+				</Link>
 			</div>
 			<BudgetForm category={category} />
 			<BudgetTable category={category} />

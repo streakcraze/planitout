@@ -8,7 +8,7 @@ export default function UserContextProvider(props) {
 	const [user, setUser] = useState({});
 	const [userLoading, setUserLoading] = useState(false);
 
-	const URI = "https://planitout-server.vercel.app";
+	const URI = "http://localhost:4000";
 
 	const register = (newUser) => {
 		setUserLoading(true);
@@ -23,18 +23,20 @@ export default function UserContextProvider(props) {
 			axios
 				.post(URI + "/api/users/register", newUser, config)
 				.then((res) => {
-					window.localStorage.setItem("budget-token", res.data.user.token);
-					setIsAuthenticated(true);
-					setUser(res.data.user);
 					setUserLoading(false);
-					resolve();
+					console.log(res);
+					resolve({ emailSent: true });
 				})
 				.catch((err) => {
 					setUserLoading(false);
 					if (err.code === "ERR_NETWORK") {
-						window.alert(err.message + ": Check your internet connection");
+						window.alert(
+							err.message +
+								": Check your internet connection and reload the page."
+						);
 					} else {
-						reject({ register: err.response.data.msg });
+						console.log(err);
+						reject({ emailSent: false });
 					}
 				});
 		});
@@ -62,7 +64,10 @@ export default function UserContextProvider(props) {
 				.catch((err) => {
 					setUserLoading(false);
 					if (err.code === "ERR_NETWORK") {
-						window.alert(err.message + ": Check your internet connection");
+						window.alert(
+							err.message +
+								": Check your internet connection and reload the page."
+						);
 					} else {
 						reject({ login: err.response.data.msg });
 					}
@@ -92,7 +97,10 @@ export default function UserContextProvider(props) {
 				})
 				.catch((err) => {
 					if (err.code === "ERR_NETWORK") {
-						window.alert(err.message + ": Check your internet connection");
+						window.alert(
+							err.message +
+								": Check your internet connection and reload the page."
+						);
 					} else {
 						reject({ loadUser: err.response.data.msg });
 					}

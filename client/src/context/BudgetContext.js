@@ -10,7 +10,7 @@ export default function BudgetContextProvider(props) {
 	const [errors, setErrors] = useState(null);
 	const [editItem, setEditItem] = useState(null);
 
-	const URI = "https://planitout-server.vercel.app";
+	const URI = "http://localhost:4000";
 
 	const getCategories = (itemsData) => {
 		setCategories([...new Set(itemsData.map((item) => item.category))]);
@@ -63,9 +63,8 @@ export default function BudgetContextProvider(props) {
 
 		axios
 			.post(URI + "/api/items", item, config)
-			.then((res) => {
+			.then(() => {
 				setItemsLoading(false);
-				console.log(res.data);
 				getItems();
 			})
 			.catch((err) => {
@@ -89,9 +88,8 @@ export default function BudgetContextProvider(props) {
 
 		axios
 			.delete(URI + "/api/items", { ...config, data: ids })
-			.then((res) => {
+			.then(() => {
 				setItemsLoading(false);
-				console.log(res.data);
 				getItems();
 			})
 			.catch((err) => {
@@ -119,9 +117,8 @@ export default function BudgetContextProvider(props) {
 
 		axios
 			.put(URI + "/api/items", editObj, config)
-			.then((res) => {
+			.then(() => {
 				setItemsLoading(false);
-				console.log(res.data);
 				getItems();
 			})
 			.catch((err) => {
@@ -147,9 +144,8 @@ export default function BudgetContextProvider(props) {
 
 		axios
 			.put(URI + "/api/items/category", updateObj, config)
-			.then((res) => {
+			.then(() => {
 				setItemsLoading(false);
-				console.log(res.data);
 				getItems();
 			})
 			.catch((err) => {

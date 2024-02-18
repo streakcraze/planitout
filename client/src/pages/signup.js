@@ -105,8 +105,8 @@ export default function Login() {
 		else {
 			const newUser = { username, email, password };
 			register(newUser)
-				.then(() => navigate("/"))
-				.catch((err) => setErrors(err));
+				.then((res) => navigate(`/verifyEmail/${res.emailSent}`))
+				.catch((err) => navigate(`/verifyEmail/${err.emailSent}`));
 		}
 	};
 

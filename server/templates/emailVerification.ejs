@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Email Verification</title>
+		<style>
+			body {
+				margin: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				height: 100vh;
+				background: linear-gradient(100deg, #ff9800, #cddc39);
+			}
+
+			.card {
+				background-color: white;
+				padding: 20px;
+				border-radius: 10px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+				text-align: center;
+			}
+
+			.topic {
+				color: #2f32ff;
+				font-size: 24px;
+				font-weight: bold;
+				margin-bottom: 10px;
+				text-transform: capitalize;
+			}
+
+			.text {
+				color: black;
+				font-size: 16px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="card">
+			<div class="topic" id="topic"><%= topic %></div>
+			<div class="text" id="text"><%= text %></div>
+		</div>
+	</body>
+</html>

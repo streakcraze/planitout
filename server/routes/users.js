@@ -22,6 +22,7 @@ router.get("/", auth, (req, res) => {
 
 router.post("/register", (req, res) => {
 	const { username, email, password } = req.body;
+	serverURL = req.protocol + "://" + req.get("host");
 
 	userModel.findOne({ $or: [{ username }, { email }] }).then((user) => {
 		if (user) {
@@ -32,47 +33,26 @@ router.post("/register", (req, res) => {
 			}
 		}
 
-		const newUser = new userModel({
-			username,
-			email,
-			password,
-		});
-
 		bcrypt.genSalt(10, (err, salt) => {
 			if (err) {
 				return res.status(500).json({ msg: "error generating salt", err });
 			}
 
-			bcrypt.hash(newUser.password, salt, (err, hash) => {
+			bcrypt.hash(password, salt, (err, hashedPassword) => {
 				if (err) {
 					return res.status(500).json({ msg: "error hashing password", err });
 				}
 
-				newUser.password = hash;
+				const newUser = new userModel({
+					username,
+					email,
+					password: hashedPassword,
+				});
+
 				newUser
 					.save()
 					.then((user) => {
-						sendVerificationEmail(user, res);
-						// jwt.sign(
-						// 	{ id: user._id },
-						// 	process.env.jwtSecret,
-						// 	{ expiresIn: 3600 },
-						// 	(err, token) => {
-						// 		if (err) {
-						// 			return res
-						// 				.status(500)
-						// 				.json({ msg: "error generating token", err });
-						// 		}
-						// 		res.status(200).json({
-						// 			user: {
-						// 				token,
-						// 				id: user._id,
-						// 				username: user.username,
-						// 				email: user.email,
-						// 			},
-						// 		});
-						// 	}
-						// );
+						sendVerificationEmail(user, serverURL, res);
 					})
 					.catch((err) => {
 						res.status(500).json({ msg: "error saving user model", err });
@@ -124,92 +104,59 @@ router.post("/login", (req, res) => {
 		});
 });
 
-router.get("/verify/:userId/:uniqueString", (req, res) => {
+router.get("/verify/:userId/:uniqueString", async (req, res) => {
 	let { userId, uniqueString } = req.params;
+	const responseTemplate = "emailVerification";
 
-	userVerificationModel
-		.find({ userId })
-		.then((result) => {
-			if (result.length > 0) {
-				const { expiresAt } = result[0];
-				const hashedUniqueString = result[0].uniqueString;
+	try {
+		const verificationRecord = await userVerificationModel.findOne({ userId });
+		const { expiresAt, uniqueString: hashedUniqueString } = verificationRecord;
 
-				if (expiresAt < Date.now()) {
-					userVerificationModel
-						.deleteOne({ userId })
-						.then(() => {
-							userModel
-								.deleteOne({ _id: userId })
-								.then(() =>
-									res
-										.status(400)
-										.json({ msg: "link has expired. sign up again" })
-								)
-								.catch((err) =>
-									res.status(500).json({
-										msg: "error clearing user record with expired verification record",
-										err,
-									})
-								);
-						})
-						.catch((err) =>
-							res.status(500).json({
-								msg: "error while clearing expired user verification record",
-								err,
-							})
-						);
-				} else {
-					bcrypt
-						.compare(uniqueString, hashedUniqueString)
-						.then((result) => {
-							if (result) {
-								userModel
-									.updateOne({ _id: userId }, { verified: true })
-									.then(() => {
-										userVerificationModel
-											.deleteOne({ userId })
-											.then(() =>
-												res.status(200).json({
-													msg: "successfull verification. you can now login",
-												})
-											)
-											.catch((err) =>
-												res.status(500).json({
-													msg: "error removing used user verification record",
-													err,
-												})
-											);
-									})
-									.catch((err) =>
-										res.status(500).json({
-											msg: "error updating user verified field to true",
-											err,
-										})
-									);
-							} else {
-								res.status(400).json({
-									msg: "invalid verification details. click the link in the inbox again.",
-								});
-							}
-						})
-						.catch((err) =>
-							res.status(500).json({
-								msg: "error comparing unique strings from verification link and database",
-								err,
-							})
-						);
+		if (expiresAt < Date.now()) {
+			try {
+				await userVerificationModel.deleteOne({ userId });
+				await userModel.deleteOne({ _id: userId });
+				const topic = "invalid link";
+				const text = "link has expired, sign up again";
+				return res.render(responseTemplate, { topic, text });
+			} catch (err) {
+				const topic = "internal server error";
+				const text =
+					"ran into problems clearing expired user, please contact support";
+				return res.render(responseTemplate, { topic, text });
+			}
+		}
+
+		try {
+			const result = await bcrypt.compare(uniqueString, hashedUniqueString);
+			if (result) {
+				try {
+					await userModel.updateOne({ _id: userId }, { verified: true });
+					await userVerificationModel.deleteOne({ userId });
+					const topic = "successful verification";
+					const text = "email has been verified, you can now login";
+					res.render(responseTemplate, { topic, text });
+				} catch (err) {
+					const topic = "internal server error";
+					const text =
+						"ran into problems verifying user, please contact support";
+					res.render(responseTemplate, { topic, text });
 				}
 			} else {
-				return res.status(500).json({
-					msg: "account record doesn't exist or has been verified already",
-				});
+				const topic = "invalid link";
+				const text = "wrong link, check your inbox again";
+				res.render(responseTemplate, { topic, text });
 			}
-		})
-		.catch((err) =>
-			res
-				.status(500)
-				.json({ msg: "error searching record for user verification", err })
-		);
+		} catch (err) {
+			const topic = "internal server error";
+			const text = "ran into problems verifying link, please contact support";
+			res.render(responseTemplate, { topic, text });
+		}
+	} catch (err) {
+		const topic = "invalid link";
+		const text = "link has already been used, proceed to login";
+		res.render(responseTemplate, { topic, text });
+	}
 });
 
 // nodemailer stuff
@@ -223,39 +170,59 @@ let transporter = nodemailer.createTransport({
 
 // testing success
 transporter.verify((error, success) => {
-	if (error) console.log(error);
-	else {
+	if (error) {
+		console.log("error verifying transporter");
+		console.log(error);
+	} else {
 		console.log("ready for messages");
 		console.log(success);
 	}
 });
 
 // send verification email
-const sendVerificationEmail = ({ _id, email }, res) => {
-	// url to be used in the email
-	const currentURL = "http://localhost:4000";
-
+const sendVerificationEmail = ({ _id, email }, serverURL, res) => {
 	const uniqueString = uuidv4() + _id;
 
 	const mailOptions = {
 		from: process.env.AUTH_EMAIL,
 		to: email,
 		subject: "Verify Your Email",
-		html: `<p>Verify your email to complete the signup and login to your account.</p>
-				<p>This link <b>expires in 6 hours</b></p>
+		html: `<head><style>
+					a {
+						background-color: #f44336;
+						color: white;
+						padding: 10px 15px;
+						text-align: center;
+						text-decoration: none;
+					}
+					
+					a:hover {
+						background-color: red;
+					}
+				</style></head>
+				<body>
+				<p>Verify your email to complete the signup.</p>
+				<p>This link <b>expires in 6 hours</b>.</p>
 				<p>Press <a href=${
-					currentURL + "/api/users/verify" + _id + "/" + uniqueString
-				}>here</a> to continue.</p>`,
+					serverURL + "/api/users/verify/" + _id + "/" + uniqueString
+				} target='_blank'>here</a> to continue.</p>
+				</body>`,
 	};
 
 	bcrypt.genSalt(10, (err, salt) => {
 		if (err) {
-			return res.status(500).json({ msg: "error generating salt", err });
+			return res.status(500).json({
+				msg: "error generating hashing salt for user verification",
+				err,
+			});
 		}
 
 		bcrypt.hash(uniqueString, salt, (err, hashedUniqueString) => {
 			if (err) {
-				return res.status(500).json({ msg: "error hashing uniqueString", err });
+				return res.status(500).json({
+					msg: "error hashing unique string for user verification",
+					err,
+				});
 			}
 
 			const newUserVerification = new userVerificationModel({
@@ -272,18 +239,20 @@ const sendVerificationEmail = ({ _id, email }, res) => {
 						.then(() =>
 							res
 								.status(200)
-								.json({ msg: "user verification email sent successfully" })
+								.json({ msg: "verification email sent successfully" })
 						)
 						.catch((err) => {
-							res
-								.status(500)
-								.json({ msg: "error sending user verification email", err });
+							res.status(500).json({
+								msg: "internal server error sending verification email",
+								err,
+							});
 						});
 				})
 				.catch((err) => {
-					res
-						.status(500)
-						.json({ msg: "error saving user verification model", err });
+					res.status(500).json({
+						msg: "internal server error saving verification details",
+						err,
+					});
 				});
 		});
 	});

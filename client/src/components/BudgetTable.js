@@ -33,7 +33,7 @@ export default function BudgetTable({ category }) {
 	const sxStyles = {
 		paper: {
 			maxWidth: smallScreen ? 280 : 400,
-			margin: smallScreen ? "20px 15px" : "20px auto",
+			margin: smallScreen ? "20px" : "20px auto",
 		},
 		highlight: {
 			color: (theme) => theme.palette.secondary.main,

@@ -11,12 +11,15 @@ function auth(req, res, next) {
 	try {
 		const decodedToken = jwt.verify(token, process.env.jwtSecret);
 		req.user = decodedToken;
-		userModel.findById(req.user.id).then((user) => {
-			req.user.username = user.username;
-			next();
-		});
+		userModel
+			.findById(req.user.id)
+			.then((user) => {
+				req.user.username = user.username;
+				next();
+			})
+			.catch((err) => res.status(401).json({ msg: "invalid token", err }));
 	} catch (e) {
-		res.status(400).json({ msg: "Invalid token" });
+		res.status(401).json({ msg: "invalid token", e });
 	}
 }
 
