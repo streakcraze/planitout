@@ -108,6 +108,32 @@ export default function UserContextProvider(props) {
 		});
 	};
 
+	const resetPassword = (userEmail) => {
+		return new Promise((resolve, reject) => {
+			const config = {
+				headers: {
+					"Content-Type": "application/json",
+				},
+			};
+
+			axios
+				.post(URI + "/api/users/passwordResetEmail", userEmail, config)
+				.then((res) => {
+					resolve({ passwordReset: res.data.msg });
+				})
+				.catch((err) => {
+					if (err.code === "ERR_NETWORK") {
+						window.alert(
+							err.message +
+								": Check your internet connection and reload the page."
+						);
+					} else {
+						reject({ passwordReset: err.response.data.msg });
+					}
+				});
+		});
+	};
+
 	return (
 		<UserContext.Provider
 			value={{
@@ -117,6 +143,7 @@ export default function UserContextProvider(props) {
 				register,
 				login,
 				loadUser,
+				resetPassword,
 			}}
 		>
 			{props.children}

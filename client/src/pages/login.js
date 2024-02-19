@@ -75,9 +75,9 @@ export default function Login() {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (username.trim() === "")
-			setErrors({ ...errors, username: "field must not be empty" });
+			setErrors({ username: "field must not be empty" });
 		else if (password.trim() === "")
-			setErrors({ ...errors, password: "field must not be empty" });
+			setErrors({ password: "field must not be empty" });
 		else {
 			const user = {
 				username,
@@ -85,7 +85,11 @@ export default function Login() {
 			};
 			login(user)
 				.then(() => navigate("/"))
-				.catch((err) => setErrors(err));
+				.catch((err) => {
+					setUsername("");
+					setPassword("");
+					setErrors(err);
+				});
 		}
 	};
 
@@ -136,6 +140,9 @@ export default function Login() {
 						),
 					}}
 				/>
+				<p>
+					<a href="/resetPassword">forgot password?</a>
+				</p>
 				<span>
 					not a user yet? <a href="/signup">signup</a>
 				</span>

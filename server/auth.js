@@ -4,8 +4,9 @@ require("dotenv").config();
 const userModel = require("./models/user");
 
 function auth(req, res, next) {
-	const token = req.header("x-auth-token");
+	res.header("Cache-Control", "no-store");
 
+	const token = req.header("x-auth-token");
 	if (!token) return res.status(401).json({ msg: "No token" });
 
 	try {

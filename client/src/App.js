@@ -8,6 +8,7 @@ import Signup from "./pages/signup";
 import Home from "./pages/home";
 import Profile from "./pages/profile";
 import EmailVerification from "./pages/email";
+import PasswordReset from "./pages/password";
 
 // components
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -64,6 +65,7 @@ function App() {
 								path="/verifyEmail/:emailSent"
 								element={<EmailVerification />}
 							/>
+							<Route exact path="/resetPassword" element={<PasswordReset />} />
 							<Route
 								exact
 								path="/"
